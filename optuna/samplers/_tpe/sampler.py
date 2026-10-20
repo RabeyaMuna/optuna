@@ -532,7 +532,7 @@ class TPESampler(BaseSampler):
 
     @staticmethod
     def hyperopt_parameters() -> Dict[str, Any]:
-        """Return the the default parameters of hyperopt (v0.1.2).
+        """Return the default parameters of hyperopt (v0.1.2).
 
         :class:`~optuna.samplers.TPESampler` can be instantiated with the parameters returned
         by this method.
@@ -547,11 +547,9 @@ class TPESampler(BaseSampler):
                 import optuna
                 from optuna.samplers import TPESampler
 
-
                 def objective(trial):
                     x = trial.suggest_float("x", -10, 10)
                     return x**2
-
 
                 sampler = TPESampler(**TPESampler.hyperopt_parameters())
                 study = optuna.create_study(sampler=sampler)
