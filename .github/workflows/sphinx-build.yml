@@ -1,32 +1,35 @@
 name: Sphinx
-
-on:
-  push:
-    branches:
-      - master
-  pull_request: {}
-
+on: push
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/master' && github.run_number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/master' && 
+    github.run_number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   documentation:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
+    services:
+
+      pypi_wayback:
+
+        image: ghcr.io/waleko/pypi-wayback
+
+        ports:
+
+        - 8629:8080
 
     steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.8
 
-    # note (crcrpar): We've not updated tutorial frequently enough so far thus
-    # it'd be okay to discard cache by any small changes including typo fix under tutorial directory.
     - name: Sphinx Gallery Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: sphx-glry-documentation
       with:
@@ -54,32 +57,42 @@ jobs:
         make html
         cd ../
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: built-html
         path: |
-            docs/build/html
+          docs/build/html
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: tutorial
         path: |
-            docs/source/tutorial
+          docs/source/tutorial
 
   doctest:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
+    services:
+
+      pypi_wayback:
+
+        image: ghcr.io/waleko/pypi-wayback
+
+        ports:
+
+        - 8629:8080
 
     steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.8
 
     - name: Sphinx Gallery Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: sphx-glry-doctest
       with:
@@ -105,3 +118,7 @@ jobs:
       run: |
         cd docs
         make doctest
+
+env:
+  PIP_INDEX_URL: http://localhost:8629/2023-11-01
+  UV_INDEX_URL: http://localhost:8629/2023-11-01
