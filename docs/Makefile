@@ -21,7 +21,7 @@ help:
 
 doctest:
 	sphinx-autogen source/**/*.rst
-	@$(SPHINXBUILD) -M doctest "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -b doctest "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 # Copy from https://sphinx-gallery.github.io/stable/advanced.html#cleaning-the-gallery-files
 clean:
